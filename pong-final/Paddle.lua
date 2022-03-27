@@ -26,15 +26,23 @@ Paddle = Class{}
     have their own x, y, width, and height values, thus serving as containers
     for data. In this sense, they're very similar to structs in C.
 ]]
-function Paddle:init(x, y, width, height)
+function Paddle:init(x, y, width, height, is_ai)
     self.x = x
     self.y = y
     self.width = width
     self.height = height
     self.dy = 0
+    self.is_ai = is_ai
 end
 
-function Paddle:update(dt)
+function Paddle:update(dt, ball)
+    if self.is_ai then
+        if self.dy < 0 then
+            self.y = math.max(0, ball.y + self.dy * dt)
+        else
+            self.y = math.min(VIRTUAL_HEIGHT - self.height, ball.y + self.dy * dt)
+        end
+    end
     -- math.max here ensures that we're the greater of 0 or the player's
     -- current calculated Y position when pressing up so that we don't
     -- go into the negatives; the movement calculation is simply our
